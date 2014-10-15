@@ -1,0 +1,162 @@
+﻿<#@ template language="C#" #>
+
+namespace <#=sp.SchemaName#> {
+
+	using System;
+	using System.Data;
+	using System.Data.SqlClient;
+	using System.Data.SqlTypes;
+	using System.Collections.Generic;
+	using System.Linq;
+
+	public class <#=sp.ClassName#>: DbWrap.StoredProc {
+		public class Parameter {
+<#			foreach (var pa in sp.rgParam) {#>
+			public DbWrap.WrapType<<#=pa.TypeName#>> <#=pa.Identifier#> = null;//<#=pa.SqlTypeName#>
+<#			}//foreach#>
+			public Parameter() {}
+			public Parameter(DBNull val) {
+<#			foreach (var pa in sp.rgParam) {#>
+				<#=pa.Identifier#> = DBNull.Value;
+<#			}//foreach#>
+			}
+		}
+
+<#		
+		int ixResultset=0; 
+		foreach (var rs in sp.Resultsets()) {#>
+			public class ResultWrap<#=ixResultset#>: IDisposable {
+<#			foreach (var col in rs) {#>
+					public <#=col.FieldType#> <#=col.Identifier#> {
+						get {
+							var ix = rs.GetOrdinal("<#=col.Name#>");
+							if(rs.IsDBNull(ix)) {
+								return null;
+							} else {
+								return rs.<#=col.GetMethodName#>(ix);
+							}
+						}
+					}//<#=col.Name#>
+<#			}#>
+				private SqlDataReader rs;
+				public ResultWrap<#=ixResultset#>(SqlDataReader _rs) {
+					rs = _rs;
+				}
+				public void Dispose() {
+					if(rs!=null) {
+						rs.Dispose();
+						rs = null;
+					}
+				}
+				public bool Read() {
+					return rs.Read();
+				}
+				public IEnumerable<ResultCache<#=ixResultset#>> Items() {
+						while (Read()) {
+							yield return new ResultCache<#=ixResultset#>(this);
+						}
+				}
+
+<#				if(ixResultset<sp.ResultsetCount-1) {#>
+				public ResultWrap<#=(ixResultset+1)#> NextResult() {
+					return new ResultWrap<#=(ixResultset+1)#>(rs.NextResult());
+				}
+<#				}#>
+			}
+			
+			public class ResultCache<#=ixResultset#> {
+<#				foreach (var col in rs) {#>
+						public <#=col.FieldType#> <#=col.Identifier#>;//<#=col.Name#>
+<#				}#>
+				public ResultCache<#=ixResultset#>() {}
+				public ResultCache<#=ixResultset#>(ResultWrap<#=ixResultset#> w) {
+<#					foreach (var col in rs) {#>
+						<#=col.Identifier#> = w.<#=col.Identifier#>;
+<#					}#>
+				}
+			}
+<#			if(ixResultset==0) {#>
+				public ResultWrap<#=ixResultset#> ExecuteReader(Parameter param = null) {
+					Param2Command(param);
+					return new ResultWrap<#=ixResultset#>(cmd.ExecuteReader());
+				}
+				public ResultCache<#=ixResultset#> QueryRow(Parameter param = null) {
+					using (var rs = ExecuteReader(param)) {
+						return rs.Read()?new ResultCache<#=ixResultset#>(rs):null;
+					}
+				}
+				public List<ResultCache<#=ixResultset#>> ListRows(Parameter param=null) {
+					using(var rs = ExecuteReader(param)) {
+						return rs.Items().ToList<ResultCache<#=ixResultset#>>();
+					}
+				}
+<#			}//if#>
+<#
+			ixResultset++;
+		}//foreach
+#>
+
+		public <#=sp.ClassName#>(SqlConnection conn, Parameter param = null):base(conn, "<#=sp.ProcName#>") {
+			if(param!=null) {
+				Param2Command(param);
+			}
+		}
+
+		override protected void AllocateParameters(SqlCommand cmd) {
+<#			foreach (var pa in sp.rgParam) {#>
+			cmd.Parameters.Add(DbWrap.SqlParam.New("<#=pa.Name#>", SqlDbType.<#=pa.SqlTypeName#>, <#=pa.param.Size#>, ParameterDirection.<#=pa.param.Direction#>));
+<#			}//foreach#>
+		}
+
+<#		foreach (var pa in sp.rgParam) {#>
+		public SqlParameter param_<#=pa.Identifier#> {
+			get {return cmd.Parameters["<#=pa.Name#>"];}
+		}
+		public DbWrap.WrapType<<#=pa.TypeName#>> <#=pa.Identifier#> {
+			get {return new DbWrap.WrapType<<#=pa.TypeName#>>(param_<#=pa.Identifier#>.Value);}
+<#			if(pa.param.Direction!=System.Data.ParameterDirection.ReturnValue) {#>
+				set {
+					if(value!=null) {
+						param_<#=pa.Identifier#>.Value = value.ObjectValue;
+					}
+				}
+<#			}//if#>
+		}
+<#		}//foreach#>
+
+		protected void Param2Command(Parameter param) {
+			if(param==null) {
+				return;
+			}
+<#			foreach (var pa in sp.rgParam) {#>
+<#				if(pa.param.Direction!=System.Data.ParameterDirection.ReturnValue) {#>
+					if (param.<#=pa.Identifier#> != null) {
+						this.<#=pa.Identifier#> = param.<#=pa.Identifier#>;
+					}
+<#				}//if#>
+<#			}//foreach#>
+		}
+
+		protected void Command2Param(Parameter param) {
+			if(param==null) {
+				return;
+			}
+<#			foreach (var pa in sp.rgParam) {
+				if(pa.param.Direction!=System.Data.ParameterDirection.Input) {
+			#>
+			param.<#=pa.Identifier#> = this.<#=pa.Identifier#>;
+<#			
+				}//if
+			}//foreach#>
+		}
+
+		public int ExecuteNonQuery(Parameter param = null) {
+			Param2Command(param);
+			int res = cmd.ExecuteNonQuery();
+			Command2Param(param);
+			return res;
+		}
+
+	}//class <#=sp.ClassName#>
+
+}//namespace <#=sp.SchemaName#>
