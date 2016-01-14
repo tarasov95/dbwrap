@@ -5,7 +5,7 @@ It's a library that can generate a C# wrapper class for any stored procedure in 
 
 Main goal of the library is use C# compiler to track changes in the database layer & detect problems related to compatibility of the C# code with the database public interface. For example, if you have a stored procedure and have used it for some time  and then, suddenly, number/types/names of the procedure parameters changes C# compiler should generate an error and point you to the problem. As a bonus Visual Studio intellisense is immediately aware of the stored procedure names, parameters and their data types.
 
-Entity framework can be used to the same effect. Comparing to the Entity Framework, the library is very simple & single-focused: it leaves everything to the database layer and only takes care of invoking stored procedure through the generated wrappers. Another objective solved by the library is ability to integrate in msbuild (or other build systems) and perfom mandatory compile time checking of the database layer at compile time.
+jOOQ (http://www.jooq.org/) from Java world is conceptually very similar to this library. Unlike the prototype, DbWrap supports only MSSQL server and can generate wrappers only for stored procedures. While obviously a limitation, those constraints make the library very simple, easy to manage and tend to enforce a good encapsulation of the core database objects.
 
 How to use
 ==========
@@ -42,5 +42,5 @@ namespace MyDatabase {
    <#=StoredProc.Generate("data source=.\SQLEXPRESS;initial catalog=master;integrated security=True;"), "sys.sp_addrole")#>
 }
 ```
-- after you save the file Visual Studio will execute the template and generate wrapper classes for all stored procedures listed in it; project tree will look similar to the screenshot below
--if you need to regenerate the wrappers manually use [BUILD/Transform All T4 Templates] command in Visual Studio main menu
+- after you save the file Visual Studio will execute the template and generate wrapper classes for all stored procedures listed in it
+- if you need to regenerate the wrappers manually use [BUILD/Transform All T4 Templates] command in Visual Studio main menu
