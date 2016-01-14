@@ -8,8 +8,10 @@ namespace <#=sp.SchemaName#> {
 	using System.Data.SqlTypes;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Xml.Serialization;
 
 	public class <#=sp.ClassName#>: DbWrap.StoredProc {
+		[XmlType(TypeName = "<#=sp.ClassName#>_Parameter")]
 		public class Parameter {
 <#			foreach (var pa in sp.rgParam) {#>
 			public DbWrap.WrapType<<#=pa.TypeName#>> <#=pa.Identifier#> = null;//<#=pa.SqlTypeName#>
@@ -64,6 +66,7 @@ namespace <#=sp.SchemaName#> {
 <#				}#>
 			}
 			
+			[XmlType(TypeName = "<#=sp.ClassName#>_Result<#=ixResultset#>")]
 			public class ResultCache<#=ixResultset#> {
 <#				foreach (var col in rs) {#>
 						public <#=col.FieldType#> <#=col.Identifier#>;//<#=col.Name#>
@@ -101,6 +104,9 @@ namespace <#=sp.SchemaName#> {
 				Param2Command(param);
 			}
 		}
+		public <#=sp.ClassName#>(SqlConnection conn, DBNull val):this(conn, new Parameter(val)) {}
+		public <#=sp.ClassName#>(SqlTransaction trans, Parameter param = null):this(trans.Connection, param) {this.trans = trans;}
+		public <#=sp.ClassName#>(SqlTransaction trans, DBNull val):this(trans, new Parameter(val)) {}
 
 		override protected void AllocateParameters(SqlCommand cmd) {
 <#			foreach (var pa in sp.rgParam) {#>

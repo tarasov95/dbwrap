@@ -1,5 +1,4 @@
-﻿using FocalScope;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -9,93 +8,6 @@ using System.Threading.Tasks;
 using DbWrap;
 using System.Text.RegularExpressions;
 using System.Transactions;
-
-namespace callog {
-
-	using System;
-	using System.Data;
-	using System.Data.SqlClient;
-	using System.Collections.Generic;
-	using System.Linq;
-
-	public class NotifyFsUser : DbWrap.StoredProc {
-		public class Parameter {
-			public DbWrap.WrapType<int> RETURN_VALUE = null;//Int
-			public DbWrap.WrapType<string> sAgentName = null;//NVarChar
-			public DbWrap.WrapType<string> sPhoneNumber = null;//NVarChar
-			public Parameter() { }
-			public Parameter(DBNull val) {
-				RETURN_VALUE = DBNull.Value;
-				sAgentName = DBNull.Value;
-				sPhoneNumber = DBNull.Value;
-			}
-		}
-
-
-		public NotifyFsUser(SqlConnection conn, Parameter param = null)
-			: base(conn, "callog.NotifyFsUser") {
-			if (param != null) {
-				Param2Command(cmd, param);
-			}
-		}
-
-		override protected void AllocateParameters(SqlCommand cmd) {
-			cmd.Parameters.Add(DbWrap.SqlParam.New("@RETURN_VALUE", SqlDbType.Int, 0, ParameterDirection.ReturnValue));
-			cmd.Parameters.Add(DbWrap.SqlParam.New("@sAgentName", SqlDbType.NVarChar, 64, ParameterDirection.Input));
-			cmd.Parameters.Add(DbWrap.SqlParam.New("@sPhoneNumber", SqlDbType.NVarChar, 64, ParameterDirection.Input));
-		}
-
-		public DbWrap.WrapType<int> RETURN_VALUE {
-			get { return new DbWrap.WrapType<int>(cmd.Parameters["@RETURN_VALUE"].Value); }
-		}
-		public DbWrap.WrapType<string> sAgentName {
-			get { return new DbWrap.WrapType<string>(cmd.Parameters["@sAgentName"].Value); }
-			set {
-				if (value != null) {
-					cmd.Parameters["@sAgentName"].Value = value.ObjectValue;
-				}
-			}
-		}
-		public DbWrap.WrapType<string> sPhoneNumber {
-			get { return new DbWrap.WrapType<string>(cmd.Parameters["@sPhoneNumber"].Value); }
-			set {
-				if (value != null) {
-					cmd.Parameters["@sPhoneNumber"].Value = value.ObjectValue;
-				}
-			}
-		}
-
-
-		protected void Param2Command(SqlCommand cmd, Parameter param) {
-			if (param == null) {
-				return;
-			}
-			if (param.sAgentName != null) {
-				this.sAgentName = param.sAgentName;
-			}
-			if (param.sPhoneNumber != null) {
-				this.sPhoneNumber = param.sPhoneNumber;
-			}
-		}
-
-		protected void Command2Param(Parameter param, SqlCommand cmd) {
-			if (param == null) {
-				return;
-			}
-			param.RETURN_VALUE = this.RETURN_VALUE;
-		}
-
-		public int ExecuteNonQuery(Parameter param = null) {
-			Param2Command(cmd, param);
-			int res = cmd.ExecuteNonQuery();
-			Command2Param(param, cmd);
-			return res;
-		}
-
-	}//class NotifyFsUser
-
-}//namespace callog
-
 
 namespace DbWrap {
 	namespace Generate {
@@ -237,9 +149,12 @@ namespace DbWrap {
 						fFirst = false;
 					}
 				}
+				if (fFirst) {
+					sSql += "\n";
+				}
 				sSql += "set fmtonly off;\n";
 				var ds = new DataSet();
-				try {
+				//try {
 					using (var tr = new TransactionScope()) {
 						using (var cmd = new SqlCommand(sSql, m_conn)) {
 							cmd.CommandType = CommandType.Text;
@@ -248,8 +163,8 @@ namespace DbWrap {
 							}
 						}
 					}
-				} catch (Exception) {
-				}
+				//} catch (Exception) {
+				//}
 				return ds.Tables;
 			}
 

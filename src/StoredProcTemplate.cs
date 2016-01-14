@@ -34,72 +34,79 @@ namespace DbWrap.Generate
             #line hidden
             this.Write(" {\r\n\r\n\tusing System;\r\n\tusing System.Data;\r\n\tusing System.Data.SqlClient;\r\n\tusing " +
                     "System.Data.SqlTypes;\r\n\tusing System.Collections.Generic;\r\n\tusing System.Linq;\r\n" +
-                    "\r\n\tpublic class ");
+                    "\tusing System.Xml.Serialization;\r\n\r\n\tpublic class ");
             
-            #line 12 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 13 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
             
             #line default
             #line hidden
-            this.Write(": DbWrap.StoredProc {\r\n\t\tpublic class Parameter {\r\n");
+            this.Write(": DbWrap.StoredProc {\r\n\t\t[XmlType(TypeName = \"");
             
             #line 14 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
+            
+            #line default
+            #line hidden
+            this.Write("_Parameter\")]\r\n\t\tpublic class Parameter {\r\n");
+            
+            #line 16 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			foreach (var pa in sp.rgParam) {
             
             #line default
             #line hidden
             this.Write("\t\t\tpublic DbWrap.WrapType<");
             
-            #line 15 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 17 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.TypeName));
             
             #line default
             #line hidden
             this.Write("> ");
             
-            #line 15 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 17 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" = null;//");
             
-            #line 15 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 17 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.SqlTypeName));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 16 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 18 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}//foreach
             
             #line default
             #line hidden
             this.Write("\t\t\tpublic Parameter() {}\r\n\t\t\tpublic Parameter(DBNull val) {\r\n");
             
-            #line 19 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 21 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			foreach (var pa in sp.rgParam) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\t");
             
-            #line 20 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 22 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" = DBNull.Value;\r\n");
             
-            #line 21 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 23 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}//foreach
             
             #line default
             #line hidden
             this.Write("\t\t\t}\r\n\t\t}\r\n\r\n");
             
-            #line 25 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 27 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 		
 		int ixResultset=0; 
 		foreach (var rs in sp.Resultsets()) {
@@ -108,35 +115,35 @@ namespace DbWrap.Generate
             #line hidden
             this.Write("\t\t\tpublic class ResultWrap");
             
-            #line 28 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 30 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write(": IDisposable {\r\n");
             
-            #line 29 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 31 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			foreach (var col in rs) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\t\tpublic ");
             
-            #line 30 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 32 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.FieldType));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 30 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 32 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Identifier));
             
             #line default
             #line hidden
             this.Write(" {\r\n\t\t\t\t\t\tget {\r\n\t\t\t\t\t\t\tvar ix = rs.GetOrdinal(\"");
             
-            #line 32 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 34 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
@@ -144,28 +151,28 @@ namespace DbWrap.Generate
             this.Write("\");\r\n\t\t\t\t\t\t\tif(rs.IsDBNull(ix)) {\r\n\t\t\t\t\t\t\t\treturn null;\r\n\t\t\t\t\t\t\t} else {\r\n\t\t\t\t\t\t\t" +
                     "\treturn rs.");
             
-            #line 36 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 38 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.GetMethodName));
             
             #line default
             #line hidden
             this.Write("(ix);\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}//");
             
-            #line 39 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 41 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 40 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 42 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}
             
             #line default
             #line hidden
             this.Write("\t\t\t\tprivate SqlDataReader rs;\r\n\t\t\t\tpublic ResultWrap");
             
-            #line 42 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 44 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
@@ -175,147 +182,161 @@ namespace DbWrap.Generate
                     "bool Read() {\r\n\t\t\t\t\treturn rs.Read();\r\n\t\t\t\t}\r\n\t\t\t\tpublic IEnumerable<ResultCache" +
                     "");
             
-            #line 54 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 56 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write("> Items() {\r\n\t\t\t\t\t\twhile (Read()) {\r\n\t\t\t\t\t\t\tyield return new ResultCache");
             
-            #line 56 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 58 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write("(this);\r\n\t\t\t\t\t\t}\r\n\t\t\t\t}\r\n\r\n");
             
-            #line 60 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 62 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 				if(ixResultset<sp.ResultsetCount-1) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\tpublic ResultWrap");
             
-            #line 61 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 63 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture((ixResultset+1)));
             
             #line default
             #line hidden
             this.Write(" NextResult() {\r\n\t\t\t\t\treturn new ResultWrap");
             
-            #line 62 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 64 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture((ixResultset+1)));
             
             #line default
             #line hidden
             this.Write("(rs.NextResult());\r\n\t\t\t\t}\r\n");
             
-            #line 64 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 66 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 				}
             
             #line default
             #line hidden
-            this.Write("\t\t\t}\r\n\t\t\t\r\n\t\t\tpublic class ResultCache");
+            this.Write("\t\t\t}\r\n\t\t\t\r\n\t\t\t[XmlType(TypeName = \"");
             
-            #line 67 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 69 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
+            
+            #line default
+            #line hidden
+            this.Write("_Result");
+            
+            #line 69 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
+            
+            #line default
+            #line hidden
+            this.Write("\")]\r\n\t\t\tpublic class ResultCache");
+            
+            #line 70 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write(" {\r\n");
             
-            #line 68 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 71 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 				foreach (var col in rs) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\t\t\tpublic ");
             
-            #line 69 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 72 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.FieldType));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 69 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 72 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Identifier));
             
             #line default
             #line hidden
             this.Write(";//");
             
-            #line 69 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 72 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 70 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 73 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 				}
             
             #line default
             #line hidden
             this.Write("\t\t\t\tpublic ResultCache");
             
-            #line 71 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 74 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write("() {}\r\n\t\t\t\tpublic ResultCache");
             
-            #line 72 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 75 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write("(ResultWrap");
             
-            #line 72 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 75 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write(" w) {\r\n");
             
-            #line 73 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 76 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 					foreach (var col in rs) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\t\t\t");
             
-            #line 74 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 77 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Identifier));
             
             #line default
             #line hidden
             this.Write(" = w.");
             
-            #line 74 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 77 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Identifier));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 75 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 78 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 					}
             
             #line default
             #line hidden
             this.Write("\t\t\t\t}\r\n\t\t\t}\r\n");
             
-            #line 78 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 81 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			if(ixResultset==0) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\tpublic ResultWrap");
             
-            #line 79 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 82 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
@@ -323,14 +344,14 @@ namespace DbWrap.Generate
             this.Write(" ExecuteReader(Parameter param = null) {\r\n\t\t\t\t\tParam2Command(param);\r\n\t\t\t\t\treturn" +
                     " new ResultWrap");
             
-            #line 81 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 84 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write("(cmd.ExecuteReader());\r\n\t\t\t\t}\r\n\t\t\t\tpublic ResultCache");
             
-            #line 83 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 86 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
@@ -338,14 +359,14 @@ namespace DbWrap.Generate
             this.Write(" QueryRow(Parameter param = null) {\r\n\t\t\t\t\tusing (var rs = ExecuteReader(param)) {" +
                     "\r\n\t\t\t\t\t\treturn rs.Read()?new ResultCache");
             
-            #line 85 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 88 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write("(rs):null;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\tpublic List<ResultCache");
             
-            #line 88 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 91 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
@@ -353,20 +374,20 @@ namespace DbWrap.Generate
             this.Write("> ListRows(Parameter param=null) {\r\n\t\t\t\t\tusing(var rs = ExecuteReader(param)) {\r\n" +
                     "\t\t\t\t\t\treturn rs.Items().ToList<ResultCache");
             
-            #line 90 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 93 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ixResultset));
             
             #line default
             #line hidden
             this.Write(">();\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n");
             
-            #line 93 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 96 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}//if
             
             #line default
             #line hidden
             
-            #line 94 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 97 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 
 			ixResultset++;
 		}//foreach
@@ -376,134 +397,156 @@ namespace DbWrap.Generate
             #line hidden
             this.Write("\r\n\t\tpublic ");
             
-            #line 99 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 102 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
             
             #line default
             #line hidden
             this.Write("(SqlConnection conn, Parameter param = null):base(conn, \"");
             
-            #line 99 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 102 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sp.ProcName));
             
             #line default
             #line hidden
-            this.Write("\") {\r\n\t\t\tif(param!=null) {\r\n\t\t\t\tParam2Command(param);\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\toverride pr" +
-                    "otected void AllocateParameters(SqlCommand cmd) {\r\n");
+            this.Write("\") {\r\n\t\t\tif(param!=null) {\r\n\t\t\t\tParam2Command(param);\r\n\t\t\t}\r\n\t\t}\r\n\t\tpublic ");
             
-            #line 106 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 107 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
+            
+            #line default
+            #line hidden
+            this.Write("(SqlConnection conn, DBNull val):this(conn, new Parameter(val)) {}\r\n\t\tpublic ");
+            
+            #line 108 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
+            
+            #line default
+            #line hidden
+            this.Write("(SqlTransaction trans, Parameter param = null):this(trans.Connection, param) {thi" +
+                    "s.trans = trans;}\r\n\t\tpublic ");
+            
+            #line 109 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
+            
+            #line default
+            #line hidden
+            this.Write("(SqlTransaction trans, DBNull val):this(trans, new Parameter(val)) {}\r\n\r\n\t\toverri" +
+                    "de protected void AllocateParameters(SqlCommand cmd) {\r\n");
+            
+            #line 112 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			foreach (var pa in sp.rgParam) {
             
             #line default
             #line hidden
             this.Write("\t\t\tcmd.Parameters.Add(DbWrap.SqlParam.New(\"");
             
-            #line 107 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 113 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Name));
             
             #line default
             #line hidden
             this.Write("\", SqlDbType.");
             
-            #line 107 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 113 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.SqlTypeName));
             
             #line default
             #line hidden
             this.Write(", ");
             
-            #line 107 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 113 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.param.Size));
             
             #line default
             #line hidden
             this.Write(", ParameterDirection.");
             
-            #line 107 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 113 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.param.Direction));
             
             #line default
             #line hidden
             this.Write("));\r\n");
             
-            #line 108 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 114 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}//foreach
             
             #line default
             #line hidden
             this.Write("\t\t}\r\n\r\n");
             
-            #line 111 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 117 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 		foreach (var pa in sp.rgParam) {
             
             #line default
             #line hidden
             this.Write("\t\tpublic SqlParameter param_");
             
-            #line 112 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 118 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" {\r\n\t\t\tget {return cmd.Parameters[\"");
             
-            #line 113 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 119 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Name));
             
             #line default
             #line hidden
             this.Write("\"];}\r\n\t\t}\r\n\t\tpublic DbWrap.WrapType<");
             
-            #line 115 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 121 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.TypeName));
             
             #line default
             #line hidden
             this.Write("> ");
             
-            #line 115 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 121 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" {\r\n\t\t\tget {return new DbWrap.WrapType<");
             
-            #line 116 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 122 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.TypeName));
             
             #line default
             #line hidden
             this.Write(">(param_");
             
-            #line 116 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 122 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(".Value);}\r\n");
             
-            #line 117 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 123 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			if(pa.param.Direction!=System.Data.ParameterDirection.ReturnValue) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\tset {\r\n\t\t\t\t\tif(value!=null) {\r\n\t\t\t\t\t\tparam_");
             
-            #line 120 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 126 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(".Value = value.ObjectValue;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n");
             
-            #line 123 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 129 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}//if
             
             #line default
             #line hidden
             this.Write("\t\t}\r\n");
             
-            #line 125 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 131 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 		}//foreach
             
             #line default
@@ -511,47 +554,47 @@ namespace DbWrap.Generate
             this.Write("\r\n\t\tprotected void Param2Command(Parameter param) {\r\n\t\t\tif(param==null) {\r\n\t\t\t\tre" +
                     "turn;\r\n\t\t\t}\r\n");
             
-            #line 131 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 137 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			foreach (var pa in sp.rgParam) {
             
             #line default
             #line hidden
             
-            #line 132 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 138 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 				if(pa.param.Direction!=System.Data.ParameterDirection.ReturnValue) {
             
             #line default
             #line hidden
             this.Write("\t\t\t\t\tif (param.");
             
-            #line 133 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 139 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" != null) {\r\n\t\t\t\t\t\tthis.");
             
-            #line 134 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 140 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" = param.");
             
-            #line 134 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 140 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(";\r\n\t\t\t\t\t}\r\n");
             
-            #line 136 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 142 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 				}//if
             
             #line default
             #line hidden
             
-            #line 137 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 143 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			}//foreach
             
             #line default
@@ -559,7 +602,7 @@ namespace DbWrap.Generate
             this.Write("\t\t}\r\n\r\n\t\tprotected void Command2Param(Parameter param) {\r\n\t\t\tif(param==null) {\r\n\t" +
                     "\t\t\treturn;\r\n\t\t\t}\r\n");
             
-            #line 144 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 150 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			foreach (var pa in sp.rgParam) {
 				if(pa.param.Direction!=System.Data.ParameterDirection.Input) {
 			
@@ -568,21 +611,21 @@ namespace DbWrap.Generate
             #line hidden
             this.Write("\t\t\tparam.");
             
-            #line 147 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 153 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(" = this.");
             
-            #line 147 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 153 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(pa.Identifier));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 148 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 154 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
 			
 				}//if
 			}//foreach
@@ -593,14 +636,14 @@ namespace DbWrap.Generate
                     "aram);\r\n\t\t\tint res = cmd.ExecuteNonQuery();\r\n\t\t\tCommand2Param(param);\r\n\t\t\treturn" +
                     " res;\r\n\t\t}\r\n\r\n\t}//class ");
             
-            #line 160 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 166 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sp.ClassName));
             
             #line default
             #line hidden
             this.Write("\r\n\r\n}//namespace ");
             
-            #line 162 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
+            #line 168 "C:\Mine\dmine\MF\svnt\trunk\DbWrap\StoredProcTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sp.SchemaName));
             
             #line default

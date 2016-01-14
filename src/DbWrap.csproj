@@ -50,12 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fs\FSLib\FSLib.csproj">
-      <Project>{5261c929-a40d-4d70-8a86-0df89cde2b62}</Project>
-      <Name>FSLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="StoredProcTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>StoredProcTemplate.cs</LastGenOutput>

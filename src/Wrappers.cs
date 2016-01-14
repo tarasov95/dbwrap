@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -17,9 +18,20 @@ namespace DbWrap {
 		T m_val = default(T);
 		bool m_fNull = true;
 
+		public WrapType() : this(DBNull.Value) { }
+
+		public WrapType(WrapType<T> src) {
+			if (src == null) {
+				m_fNull = true;
+			} else {
+				m_val = src.m_val;
+				m_fNull = src.m_fNull;
+			}
+		}
+
 		public WrapType(T val) {
 			m_val = val;
-			m_fNull = false;
+			m_fNull = (val==null || val is DBNull);
 		}
 
 		public WrapType(DBNull val) {
@@ -33,6 +45,7 @@ namespace DbWrap {
 
 		public bool IsNull {
 			get { return m_fNull; }
+			set { m_fNull = value; }//to support SOAP serialization
 		}
 
 		public static implicit operator WrapType<T>(T i) {
@@ -63,6 +76,10 @@ namespace DbWrap {
 				res = Guid.Parse(sVal);
 			}
 			return res;
+		}
+		public static string ConnStr4Net(string sAnyConnStr)
+		{
+			return new Regex("(Provider|DataTypeCompatibility)=[^;]+;", RegexOptions.IgnoreCase).Replace(new Regex("'SSPI'", RegexOptions.IgnoreCase).Replace(sAnyConnStr, "SSPI"), "");
 		}
 	}
 
@@ -126,17 +143,24 @@ namespace DbWrap {
 	public static class WrapAdhoc {
 		public delegate void TransactionBody(SqlTransaction trans);
 		public static void WrapTrans(this SqlConnection conn, TransactionBody fnBody) {
+			WrapTrans(conn, System.Data.IsolationLevel.ReadCommitted, fnBody);
+		}
+		public static void WrapTrans(this SqlConnection conn, System.Data.IsolationLevel iso, TransactionBody fnBody) {
 			int cMaxTry = 5;
 			while (cMaxTry > 0) {
 				cMaxTry--;
-				using (var trans = conn.BeginTransaction()) {
+				using (var trans = conn.BeginTransaction(iso)) {
 					try {
 						fnBody(trans);
 						trans.Commit();
 						return;
 					} catch (Exception e) {
-						trans.Rollback();
-						HandleTransError(e);
+						try {
+							trans.Rollback();
+							HandleTransError(e);
+						} catch (Exception re) {
+							throw new Exception(re.Message, e);
+						}
 					}
 				}
 			}
